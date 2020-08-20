@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 const style = StyleSheet.create({
   container: {
     flex:1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FBFBFB',
     justifyContent:'center',
     padding: 25,
     alignItems: 'center'
@@ -15,7 +15,7 @@ const style = StyleSheet.create({
 
   title:{
     fontFamily: 'Archivo_700Bold',
-    color: '#ff9100',
+    color: '#262626',
     fontSize: 32,
     lineHeight: 38,
     marginBottom:30,
@@ -48,7 +48,7 @@ const style = StyleSheet.create({
   buttonTextSecondary:{
     fontFamily: 'Archivo_700Bold',
     fontSize: 20,
-    color: 'red',
+    color: '#262626',
   },
 
   textMiddle:{

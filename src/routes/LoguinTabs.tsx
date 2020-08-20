@@ -9,7 +9,7 @@ const { Navigator , Screen } = createStackNavigator();
  function LoguinTabs() {
  return   (
     <Navigator>
-      <Screen title="Nome" name='Nome' component={LoguinPage}/>
+      <Screen name='Nome' component={LoguinPage}/>
       <Screen name='Email' component={LoguinPage} />
       <Screen name='Number' component={LoguinPage} />
       <Screen name='CodePage' component={LoguinPage} />
