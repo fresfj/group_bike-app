@@ -11,11 +11,11 @@ function Landing(){
   const { navigate } = useNavigation()
 
   function handleNavigateToLoguin(){
-    navigate('LoguinTabs')
+    //navigate('LoguinTabs')
   }
 
   function handleNavigateToRegister() {
-   navigate('LoguinTabs')
+   navigate('Login')
   }
 
   return (
