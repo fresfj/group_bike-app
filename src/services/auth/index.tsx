@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
+
 export const TOKEN_KEY = "@RocketSeat:token";
 
 export const onSignIn = () => AsyncStorage.setItem(TOKEN_KEY, "true");
