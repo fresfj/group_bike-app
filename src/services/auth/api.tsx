@@ -3,9 +3,7 @@ import axios from 'axios';
 import { create } from 'apisauce';
 
 const api = create({
-    baseURL: "api-dev.ds3i.com.br",
-    timeout: 1000,
-    headers: { Accept: 'application/vnd.github.v3+json' }
+    baseURL: "http://api-dev.ds3i.com.br/api"
 })
 
 api.addAsyncRequestTransform(request => async () => {
