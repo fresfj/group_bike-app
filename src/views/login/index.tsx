@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { Component  } from "react";
 import {
   SafeAreaView,
   TextInput,
+  Button,
   ActivityIndicator,
 } from 'react-native';
-import { Container, Header, Label, Content, Form, Item, Input, Text } from 'native-base';
-import { Button } from 'react-native-elements'
-import { useFormik, Formik } from "formik";
+import { 
+  Container, 
+  Label, 
+  Content, 
+  Card, 
+  Form, 
+  Item, 
+  Text, 
+  Input, 
+  Icon,
+  Toast
+} from 'native-base';
+import api from "../../services/auth/api";
+import { Formik } from "formik";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
@@ -23,62 +35,84 @@ const validationSchema = yup.object().shape({
     .max(10, 'We prefer insecure system, try a shorter password.'),
 });
 
+const signIn = async ({values, actions}) => {
+  try {
+    const res = await api.post('/auth/login', {
+      email: values.email,
+      password: values.password,
+    });
+
+    if(res.status == 200){
+      alert('Logado com sucesso!');
+      // this.props.navigation.navigate(Screens.SignInStack.route)
+    }else{
+      alert(res.data.message);
+    }
+    console.log(res);
+  } catch (err) {
+    alert(err.data.message);
+    console.log(err.data);
+    //this.setState({ errorMessage: err.data.error });
+  }
+}
 export default () => {
   return (
     <Container>
-     <Header />
-      <Content style={{ marginTop: 90 }}>
+      <Content padder style={{ marginTop: 60 }}>
+      <Card>
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(values, actions) => {
-          alert(JSON.stringify(values));
+          signIn(values, actions);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
         }}
         validationSchema={validationSchema}
       >
-        {formikProps => (
+        {props => (
         <Form>
-          <Item>
+          <Item floatingLabel style={{ margin: 20 }}>
             <Label>Email</Label>
             <Input
-              placeholder="johndoe@example.com"
+              placeholder="Email@gmail.com"
               style={{
                 padding: 10,
                 marginBottom: 3,
               }}
-              onChangeText={formikProps.handleChange('email')}
-              onBlur={formikProps.handleBlur('email')}
+              onChangeText={props.handleChange('email')}
+              onBlur={props.handleBlur('email')}
               autoFocus
             />
-            <Text style={{ color: 'red' }}>
-              {formikProps.touched.email && formikProps.errors.email}
-            </Text>
           </Item>
-          <Item>
+          {props.errors.email && props.touched.email ? (
+            <Text style={{ color: 'red' }}>{props.errors.email}</Text>
+          ): null}
+          <Item floatingLabel last style={{ margin: 20 }} >
             <Label>Password</Label>
             <Input placeholder="Password"
               style={{
                 padding: 10,
                 marginBottom: 3,
               }}
-              onChangeText={formikProps.handleChange('password')}
-              onBlur={formikProps.handleBlur('password')}
+              onChangeText={props.handleChange('password')}
+              onBlur={props.handleBlur('password')}
               secureTextEntry
             />
-            <Text style={{ color: 'red' }}>
-              {formikProps.touched.password && formikProps.errors.password}
-            </Text>
-          </Item>
-          {formikProps.isSubmitting ? (
+            <Icon active name='swap' />
+          </Item>         
+          {props.errors.password && props.touched.password ? (
+            <Text style={{ color: 'red' }}>{props.errors.password}</Text>
+          ): null}          
+          {props.isSubmitting ? (
             <ActivityIndicator />
           ) : (
-            <Button disabled={!formikProps.isValid} title="Submit"/>
+            <Button disabled={!props.isValid} onPress={props.handleSubmit} title="Send" />
           )}
           </Form>
           )}
         </Formik>
+        </Card>
       </Content>
     </Container>
   );
