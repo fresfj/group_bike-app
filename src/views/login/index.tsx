@@ -20,6 +20,7 @@ import {
 import api from "../../services/auth/api";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { useNavigation } from "@react-navigation/native";
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -35,7 +36,7 @@ const validationSchema = yup.object().shape({
     .max(10, 'We prefer insecure system, try a shorter password.'),
 });
 
-const signIn = async ({values, actions}) => {
+const signIn = async ({values, actions, navigate}) => {
   try {
     const res = await api.post('/auth/login', {
       email: values.email,
@@ -44,9 +45,10 @@ const signIn = async ({values, actions}) => {
 
     if(res.status == 200){
       alert('Logado com sucesso!');
+      navigate('Home')
       // this.props.navigation.navigate(Screens.SignInStack.route)
     }else{
-      alert(res.data.message);
+      alert('res.data.message');
     }
     console.log(res);
   } catch (err) {
@@ -56,6 +58,7 @@ const signIn = async ({values, actions}) => {
   }
 }
 export default () => {
+  const {navigate} = useNavigation();
   return (
     <Container>
       <Content padder style={{ marginTop: 60 }}>
@@ -63,7 +66,7 @@ export default () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(values, actions) => {
-          signIn(values, actions);
+          signIn({values, actions, navigate});
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
