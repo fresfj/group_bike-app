@@ -1,27 +1,13 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Alert, AsyncStorage, TextInput, Text, ActivityIndicator } from "react-native";
-import { Card, Button, Input } from "react-native-elements";
-import { onSignIn } from "../../services/auth";
-import api from "../../services/auth/api";
-
-import { Formik, ErrorMessage } from 'formik';
-import * as yup from 'yup';
-
-const signIn = async () => {
-  try {
-    const response = await api.post('/auth/login', {
-      email: 'francisco@gmail.com',
-      password: '102030@me',
-    });
-    
-    //this.setState({ loggedInUser: user });
-
-    Alert.alert('Logado com sucesso!');
-  } catch (err) {
-    console.log(err);
-    //this.setState({ errorMessage: err.data.error });
-  }
-}
+import {
+  SafeAreaView,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
+import { Container, Header, Label, Content, Form, Item, Input, Text } from 'native-base';
+import { Button } from 'react-native-elements'
+import { useFormik, Formik } from "formik";
+import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -37,27 +23,28 @@ const validationSchema = yup.object().shape({
     .max(10, 'We prefer insecure system, try a shorter password.'),
 });
 
-export default  () => (
-  <SafeAreaView style={{ paddingVertical: 20, marginTop: 90  }}>
-    <Formik
-      initialValues={{ email: '', password:''}}
-      onSubmit={(values, actions) => {
-        alert(JSON.stringify(values));
-        setTimeout(() => {
-          actions.setSubmitting(false);
-        }, 1000);
-      }}
-      validationSchema={validationSchema}
-    >
-      {formikProps => (
-        <React.Fragment>
-          <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
-            <Text style={{ marginBottom: 3 }}>Email</Text>
-            <TextInput
+export default () => {
+  return (
+    <Container>
+     <Header />
+      <Content style={{ marginTop: 90 }}>
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        onSubmit={(values, actions) => {
+          alert(JSON.stringify(values));
+          setTimeout(() => {
+            actions.setSubmitting(false);
+          }, 1000);
+        }}
+        validationSchema={validationSchema}
+      >
+        {formikProps => (
+        <Form>
+          <Item>
+            <Label>Email</Label>
+            <Input
               placeholder="johndoe@example.com"
               style={{
-                borderWidth: 1,
-                borderColor: 'black',
                 padding: 10,
                 marginBottom: 3,
               }}
@@ -68,15 +55,11 @@ export default  () => (
             <Text style={{ color: 'red' }}>
               {formikProps.touched.email && formikProps.errors.email}
             </Text>
-          </View>
-
-          <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
-            <Text style={{ marginBottom: 3 }}>Password</Text>
-            <TextInput
-              placeholder="password"
+          </Item>
+          <Item>
+            <Label>Password</Label>
+            <Input placeholder="Password"
               style={{
-                borderWidth: 1,
-                borderColor: 'black',
                 padding: 10,
                 marginBottom: 3,
               }}
@@ -87,15 +70,16 @@ export default  () => (
             <Text style={{ color: 'red' }}>
               {formikProps.touched.password && formikProps.errors.password}
             </Text>
-          </View>
-
+          </Item>
           {formikProps.isSubmitting ? (
             <ActivityIndicator />
           ) : (
-            <Button title="Submit" onPress={formikProps.handleSubmit} />
+            <Button disabled={!formikProps.isValid} title="Submit"/>
           )}
-        </React.Fragment>
-      )}
-    </Formik>
-  </SafeAreaView>
-);
+          </Form>
+          )}
+        </Formik>
+      </Content>
+    </Container>
+  );
+}
