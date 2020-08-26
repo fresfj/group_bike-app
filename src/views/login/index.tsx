@@ -1,5 +1,6 @@
-import React, { Component  } from "react";
+import React, { Component, useState } from "react";
 import {
+  AsyncStorage,
   SafeAreaView,
   TextInput,
   Button,
@@ -20,7 +21,7 @@ import {
 import api from "../../services/auth/api";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native'
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -36,29 +37,30 @@ const validationSchema = yup.object().shape({
     .max(10, 'We prefer insecure system, try a shorter password.'),
 });
 
-const signIn = async ({values, actions, navigate}) => {
-  try {
-    const res = await api.post('/auth/login', {
-      email: values.email,
-      password: values.password,
-    });
-
-    if(res.status == 200){
-      alert('Logado com sucesso!');
-      navigate('Home')
-      // this.props.navigation.navigate(Screens.SignInStack.route)
-    }else{
-      alert('res.data.message');
+export default ({navigation = useNavigation()}) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const signIn = async ({values}) => {
+    try {
+      const res = await api.post('/auth/login', {
+        email: values.email,
+        password: values.password,
+      });
+  
+      if(res.status == 200){
+        setErrorMessage("");
+        const token = res.data.token;
+        await AsyncStorage.setItem('@CodeApi:token', token);
+        navigation.navigate('Home');
+        // this.props.navigation.navigate(Screens.SignInStack.route)
+      }else{
+        setErrorMessage(JSON.stringify(res.data.message));
+      }
+      console.log(res);
+    } catch (err) {
+      setErrorMessage(JSON.stringify(err.data.message));
     }
-    console.log(res);
-  } catch (err) {
-    alert(err.data.message);
-    console.log(err.data);
-    //this.setState({ errorMessage: err.data.error });
   }
-}
-export default () => {
-  const {navigate} = useNavigation();
+
   return (
     <Container>
       <Content padder style={{ marginTop: 60 }}>
@@ -66,7 +68,7 @@ export default () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(values, actions) => {
-          signIn({values, actions, navigate});
+          signIn({values});
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
@@ -103,7 +105,10 @@ export default () => {
               secureTextEntry
             />
             <Icon active name='swap' />
-          </Item>         
+          </Item> 
+          {errorMessage ? (
+            <Text style={{ color: 'red' }}>{errorMessage}</Text>
+          ): null}     
           {props.errors.password && props.touched.password ? (
             <Text style={{ color: 'red' }}>{props.errors.password}</Text>
           ): null}          

@@ -1,8 +1,12 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { AppLoading } from 'expo'
+import { Font, AppLoading } from 'expo';
+// import * as Font from 'expo-font';
 
-
+/*import { AppLoading } from 'expo';
+import * as Font from 'expo-font';
+import { Asset } from 'expo-asset';*/
+import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
 
 import{ Archivo_400Regular, Archivo_700Bold, useFonts } from '@expo-google-fonts/archivo'
 
